@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">  
+<head>  
+<meta charset="utf-8" />  
+<meta name="viewport" content="width=device-width,initial-scale=1" />  
+<title>Priyo Toe - Ultimate Neon Battle</title>  
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>  
+body{  
+    margin:0;  
+    display:flex;  
+    align-items:center;  
+    justify-content:center;  
+    height:100vh;  
+    background:linear-gradient(135deg, #000033, #1a0033); 
+    font-family: 'Poppins', sans-serif;  
+    overflow:hidden;
+    position:relative; 
+    will-change: background; 
+}  
+
+.wrap{  
+    width:360px;  
+    display:flex;  
+    flex-direction:column;  
+    align-items:center;
+    background: rgba(0, 0, 0, 0.6); 
+    padding: 40px 20px; 
+    border-radius: 25px;
+    box-shadow: 0 0 50px rgba(255, 0, 200, 0.8), 0 0 10px rgba(0, 255, 255, 0.5); 
+    backdrop-filter: blur(8px); 
+    transition: all 0.5s ease;
+}  
+
+.wrap.no-border{
+    /* State after game starts: transparent, no shadow/blur, slightly adjusted padding */
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 20px 0 0 0; 
+    max-width: 360px;
+    width: 100%;
+}  
+
+/* --- Unique Banner Design --- */
+.premium-banner {
+    font-family: 'Bungee Inline', cursive;
+    font-size: 2.5rem; 
+    font-weight: 900;
+    text-align: center; 
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    /* Updated Unique Banner Style */
+    background: #FFD700; /* Solid Gold Base */
+    border: 3px solid #FF4500; /* Orange-Red Border */
+    color: #1a0033; /* Dark Text */
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), inset 0 0 10px #ffea00; 
+    position: relative;
+    overflow: hidden;
+    animation: bannerSmash 1.2s infinite alternate; 
+    will-change: transform, box-shadow; 
+}
+
+/* SWORD SMASH ANIMATION */
+@keyframes bannerSmash{
+    0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), inset 0 0 10px #ffea00; }
+    50% { transform: scale(1.02) rotate(1deg); box-shadow: 0 0 40px rgba(255, 165, 0, 1), inset 0 0 15px #ffea00; }
+    100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), inset 0 0 10px #ffea00; }
+}
+
+.creator-tag {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    padding: 5px 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); 
+    letter-spacing: 1px;
+    animation: floatTag 2s infinite alternate;
+}
+@keyframes floatTag{
+    0%{transform: translateY(0);}
+    50%{transform: translateY(-5px);}
+    100%{transform: translateY(0);}
+}
+
+.start-btn, .restart-btn {
+    padding: 18px 50px; 
+    margin-top: 20px;
+    font-size: 1.3rem;
+    font-weight: 900;
+    cursor: pointer;
+    border: none; 
+    border-radius: 40px; 
+    color: white;
+    background: linear-gradient(135deg, #00c3ff, #0072ff); 
+    box-shadow: 0 8px 0 0 #0056cc, 0 0 20px rgba(0, 195, 255, 0.8); 
+    transition: all .1s ease;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: glowBtn 1.5s infinite alternate;
+    font-family: 'Bungee Inline', cursive; 
+}
+.start-btn:hover, .restart-btn:hover {
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 0 0 #0056cc, 0 0 30px rgba(0, 195, 255, 1);
+}
+.start-btn:active, .restart-btn:active {
+    transform: translateY(6px); 
+    box-shadow: 0 2px 0 0 #0056cc, 0 0 10px rgba(0, 195, 255, 0.5); 
+}
+@keyframes glowBtn{
+    0%{box-shadow:0 8px 0 0 #0056cc,0 0 20px rgba(0,195,255,0.8);}
+    100%{box-shadow:0 10px 0 0 #0056cc,0 0 40px rgba(0,255,255,1);}
+}
+
+.board{
+    margin-top:20px;
+    width:100%;
+    max-width:300px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px; 
+    padding: 10px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.7); 
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); 
+    display:none; 
+}
+.cell{
+    background:#1a0033; 
+    border-radius:10px; 
+    aspect-ratio:1/1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:3.5rem; 
+    font-weight: 900;
+    cursor:pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.9);
+}
+.cell:hover{
+    transform: scale(1.05);
+    background:#3a0066; 
+    box-shadow: 0 8px 15px rgba(255, 0, 200, 0.6); 
+}
+.x{color:#00fff2; text-shadow: 0 0 10px #00fff2;} 
+.o{color:#ff00c8; text-shadow: 0 0 10px #ff00c8;} 
+
+.status{
+    margin-top:20px;
+    color:#fff;
+    font-weight:bold;
+    font-size: 1.3rem; 
+    text-shadow: 0 0 12px #00fff2; 
+    display:none; 
+}
+
+/* POPUP (Result Banner Styles) */
+@keyframes popupScaleRotate {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.popup{ 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100%;
+    height:100%;
+    transform:scale(0); 
+    padding:0; 
+    font-size:2rem; 
+    font-weight:900; 
+    text-align:center; 
+    border-radius:0; 
+    display:none; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    z-index:20000; 
+    color:#fff; 
+    font-family: 'Poppins', sans-serif; 
+    animation:none;
+    will-change: transform, opacity; 
+    opacity: 0; 
+}
+.popup.show{
+    opacity: 1;
+    animation: popupScaleRotate 0.8s forwards;
+    transform: none; 
+}
+.popup .msg-container {
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+    line-height: 1.2;
+}
+
+/* 1. WINNER STYLE (Gold 3D Ribbon - Based on YOU WIN image) */
+.popup.win{
+    background: rgba(0, 0, 0, 0.85); /* Darker background for light rays */
+}
+.popup.win .msg-container {
+    background: #FF4500; /* Red base for ribbon effect */
+    border: 5px solid #FFD700; /* Gold border */
+    color: #FFD700; /* Gold text */
+    text-shadow: 2px 2px 5px rgba(100, 0, 0, 0.8); /* Dark shadow for 3D depth */
+    position: relative;
+    overflow: hidden;
+    /* Simulate radial glow from YOU WIN image */
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.9), 
+                0 0 0 500px rgba(255, 255, 255, 0.05); /* Outer light wash */
+}
+.popup.win .emoji{
+    font-size:4.5rem; 
+    margin-bottom:15px;
+    color: #FFD700; /* Gold emoji */
+    text-shadow: 0 0 15px #FFD700;
+}
+.popup.win .msg{
+    font-family: 'Bungee Inline', cursive;
+    font-size:2.5rem;
+    color: #FFD700;
+    text-shadow: 1px 1px 0 #8B4513, 2px 2px 0 #DAA520; /* 3D text effect */
+}
+
+/* 2. LOSER STYLE (Neon Pop - Based on YOU LOSE image) */
+.popup.lose{
+    background: rgba(0, 0, 0, 0.9); 
+}
+.popup.lose .msg-container {
+    background: #000000; /* Dark background */
+    border: 5px solid #fff; /* White jagged outline base */
+    color: #ff00c8; /* Magenta Neon */
+    /* Clip-path is complicated for simple text, using border-radius and box-shadow for a similar effect */
+    border-radius: 10px;
+    padding: 40px 50px; /* More padding for effect */
+    box-shadow: 0 0 30px #ff00c8, 0 0 30px #00fff2; /* Dual neon glow */
+    outline: 5px solid #fff; /* White outline for border */
+    outline-offset: -5px;
+}
+.popup.lose .emoji{
+    font-size:4.5rem; 
+    margin-bottom:15px;
+    color: #ff00c8;
+    text-shadow: 0 0 10px #00fff2;
+}
+.popup.lose .msg{
+    font-family: 'Bungee Inline', cursive;
+    font-size:2.5rem;
+    color: #ff00c8;
+    text-shadow: 0 0 5px #ff00c8, 0 0 10px #00fff2; /* Neon text glow */
+}
+
+/* 3. DRAW STYLE (Neutral/Unique Gray Banner) */
+.popup.draw{
+    background: rgba(0, 0, 0, 0.9);
+}
+.popup.draw .msg-container {
+    padding: 30px 40px;
+    border-radius: 20px;
+    background: #A9A9A9; /* Solid Dark Gray */
+    color: #fff;
+    border: 5px solid #00fff2; /* Strong Cyan border */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7), inset 0 0 15px #ffffff; /* Inner glow for neutrality */
+}
+.popup.draw .emoji{color:#fff;}
+.popup.draw .msg{text-shadow: none;}
+
+
+/* --- Floating Telegram (Horizontal, Blinking Text) --- */
+
+.telegram-float {
+  position: fixed;
+  top: 20px;
+  right: 20px; 
+  left: auto; 
+  display: flex;
+  flex-direction: column; /* Stacks image and text vertically */
+  align-items: center; /* Centers the text under the image */
+  text-decoration: none;
+  z-index: 9999;
+  width: 100px; /* Increased width to accommodate horizontal text */
+  height: auto; 
+  background: transparent;
+  box-shadow: none; 
+}
+
+.telegram-float img {
+  width: 55px; 
+  height: 55px; 
+  border-radius: 15px; 
+  padding: 0; 
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5); 
+  border: none; 
+}
+
+/* === Horizontal & Blinking Text Style === */
+@keyframes blinkText {
+    0%, 100% { opacity: 0.1; } /* Invisible / Very faint */
+    50% { opacity: 1; } /* Fully Visible */
+}
+
+.telegram-text {
+  /* Horizontal text is default, no rotation needed */
+  writing-mode: horizontal-tb; 
+  transform: none; 
+  text-orientation: initial; 
+
+  margin-top: 5px; /* Smaller space between icon and text */
+  margin-left: 0; /* No horizontal offset */
+  
+  font-size: 0.85rem; /* Slightly increased font size */
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 8px #00c3ff; /* Neon glow */
+  text-align: center; /* Center the text itself */
+  display: block; 
+  letter-spacing: 1px;
+  
+  /* Blinking Animation: Fade in and out repeatedly */
+  animation: blinkText 2s infinite ease-in-out; 
+}
+
+
+/* --- AD CONTAINER (FIXED AT BOTTOM) --- */
+#adContainer{
+  position:fixed;
+  bottom:0; 
+  left:50%; 
+  transform:translateX(-50%); 
+  width:320px; 
+  height:50px; 
+  z-index:9999; 
+  display:block; 
+  background:transparent;
+  overflow:hidden;
+}
+
+</style>
+</head>
+<body>
+
+<a href="https://t.me/priyotoe" class="telegram-float" target="_blank" id="telegramLink">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Telegram_Messenger.png" alt="Telegram Logo">
+  <div class="telegram-text">Join Our Group</div>
+</a>
+
+<div class="wrap" id="wrap">  
+  <div class="premium-banner" id="premiumBannerText">PRIYO TOE</div>
+  
+  <div class="creator-tag" id="creatorTag">Created by Supriyo</div>
+  <button class="start-btn" id="startBtn">⭐ Start Game</button>  
+
+  <div class="board" id="board"></div>  
+  <div class="status" id="status"></div>  
+  <button class="restart-btn" id="restartBtn">🔁 REMATCH</button>  
+</div>  
+
+<div id="adContainer">
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '1b3f79f8d9bcf06d32dcb3a8a564a3c1',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/1b3f79f8d9bcf06d32dcb3a8a564a3c1/invoke.js"></script>
+</div>
+
+<div class="popup" id="resultPopup">
+    <div class="msg-container">
+        <div class="emoji">🌟</div>
+        <div class="msg">Result</div>
+    </div>
+</div>  
+
+<audio id="startSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="moveSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/ambiences/applause.ogg"></audio>
+<audio id="loseSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="drawSound" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"></audio>
+
+<script>
+const wrap = document.getElementById("wrap");
+const creatorTag = document.getElementById("creatorTag");
+const startBtn = document.getElementById("startBtn");
+const boardEl = document.getElementById("board");
+const statusEl = document.getElementById("status");
+const restartBtn = document.getElementById("restartBtn");
+const resultPopup = document.getElementById("resultPopup");
+const telegramLink = document.getElementById("telegramLink");
+const popupEmoji = resultPopup.querySelector(".emoji");
+const popupMsg = resultPopup.querySelector(".msg");
+const startSound = document.getElementById("startSound");
+const moveSound = document.getElementById("moveSound");
+const winSound = document.getElementById("winSound");
+const loseSound = document.getElementById("loseSound");
+const drawSound = document.getElementById("drawSound");
+
+let board = Array(9).fill(null);
+let gameOver = false;
+let currentTurn = "X";
+const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+// Initial State Setup 
+boardEl.style.display = "none";
+statusEl.style.display = "none";
+restartBtn.style.display = "none";
+
+
+// Start game
+startBtn.addEventListener("click",()=>{
+    startSound.currentTime=0; startSound.play();
+    
+    // 1. Hide 'First Page' elements and adjust wrap
+    wrap.classList.add("no-border");
+    telegramLink.style.display="none"; // Hides Telegram link when game starts
+    creatorTag.style.display="none";
+    startBtn.style.display="none";
+    
+    // 2. Show Game elements
+    boardEl.style.display="grid";
+    statusEl.style.display="block";
+    restartBtn.style.display="inline-block";
+    
+    createBoard();
+});
+
+function createBoard(){
+    boardEl.innerHTML=""; board=Array(9).fill(null); gameOver=false; currentTurn="X";
+    for(let i=0;i<9;i++){
+        const cell=document.createElement("div");
+        cell.className="cell";
+        cell.dataset.index=i;
+        cell.addEventListener("click",()=>playerMove(i));
+        boardEl.appendChild(cell);
+    }
+    statusEl.textContent="PLAYER X: Your Turn";
+}
+
+// Function to play move sound
+function playMoveSound(){moveSound.currentTime=0; moveSound.play();}
+
+// Updated showPopup to handle banner style and new durations
+function showPopup(message, emoji, sound, type){
+    // Determine duration based on result type
+    const duration = type === "win" ? 4000 : 2500;
+    
+    // Reset classes before adding new ones
+    resultPopup.className = "popup"; 
+    
+    popupMsg.textContent=message; 
+    popupEmoji.textContent=emoji; 
+    
+    // Add result type class and show class
+    resultPopup.classList.add(type, "show");
+    resultPopup.style.display="flex";
+
+    sound.currentTime=0; sound.play();
+    
+    setTimeout(()=>{
+        // Hide and reset classes after duration
+        resultPopup.style.display="none";
+        resultPopup.classList.remove(type, "show");
+    }, duration);
+}
+
+function playerMove(i){
+  if(gameOver || board[i] || currentTurn!=="X") return;
+  placeMark(i,"X"); 
+  playMoveSound(); // Play sound for Player X move
+  checkResult();
+  
+  if(!gameOver){
+      currentTurn="O"; 
+      statusEl.textContent="AI O: Thinking..."; // Shows "Thinking..."
+      // 500ms delay before computer moves to simulate thinking
+      setTimeout(computerMove, 500); 
+  }
+}
+
+function computerMove(){
+  if(gameOver || currentTurn!=="O") return;
+  let move=findBestMove(); 
+  placeMark(move,"O"); 
+  playMoveSound(); // Play sound for AI O move
+  checkResult();
+  
+  if(!gameOver){
+      currentTurn="X"; 
+      statusEl.textContent="PLAYER X: Your Turn";
+  }
+}
+
+function checkResult(){
+  // Note: Duration is passed implicitly to showPopup now
+  if(checkWinner("X")){statusEl.textContent="X WINS! (REMATCH)"; gameOver=true; showPopup("YOU WIN!","🌟", winSound,"win");}
+  else if(checkWinner("O")){statusEl.textContent="O WINS! (REMATCH)"; gameOver=true; showPopup("YOU LOSE!","😥", loseSound,"lose");}
+  else if(board.every(v=>v)){statusEl.textContent="DRAW! (REMATCH)"; gameOver=true; showPopup("IT'S A DRAW!","🤝", drawSound,"draw");}
+}
+
+function placeMark(i,player){
+    board[i]=player; 
+    const cell=boardEl.children[i]; 
+    cell.textContent=player; 
+    cell.classList.add(player.toLowerCase());
+}
+
+function checkWinner(player){return wins.some(([a,b,c])=>board[a]===player && board[b]===player && board[c]===player);}
+
+// Minimax-lite AI for best move: Win > Block > Center > Random Corner/Side
+function findBestMove(){
+    // 1. Check for immediate win (O)
+    for(let [a,b,c] of wins){
+        const line=[a,b,c];let vals=line.map(i=>board[i]);
+        if(vals.filter(v=>"O"===v).length===2 && vals.includes(null)) return line[vals.indexOf(null)];
+    }
+    // 2. Check for immediate block (X)
+    for(let [a,b,c] of wins){
+        const line=[a,b,c];let vals=line.map(i=>board[i]);
+        if(vals.filter(v=>"X"===v).length===2 && vals.includes(null)) return line[vals.indexOf(null)];
+    }
+    // 3. Take Center (4)
+    let empties=board.map((v,i)=>v?null:i).filter(v=>v!==null);
+    if(empties.includes(4)) return 4;
+    
+    // 4. Take a Corner (0, 2, 6, 8) 
+    const corners = [0, 2, 6, 8].filter(i => empties.includes(i));
+    if (corners.length > 0) return corners[Math.floor(Math.random() * corners.length)];
+    
+    // 5. Take any remaining empty spot (sides)
+    return empties[Math.floor(Math.random()*empties.length)];
+}
+
+// REMATCH button resets the game state
+restartBtn.addEventListener("click",()=>{createBoard();});
+</script>
+</body>
+</html>
